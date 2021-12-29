@@ -6,4 +6,6 @@ from .models import Order,OrderItem
 class CusomtOrderAdmin(admin.ModelAdmin):
     list_display = ('id', 'status', 'customer','createdAt', 'totalPrice',)
 
-admin.site.register(OrderItem)
+@admin.register(OrderItem)
+class CusomtOrderItemAdmin(admin.ModelAdmin):
+    list_display = ('id', 'product', 'order','qty', 'price',)
