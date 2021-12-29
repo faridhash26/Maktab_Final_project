@@ -20,14 +20,12 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = ['email']
     user_type =models.CharField(choices=USER_TYPE, default=CUSTOMER, max_length=2,) 
     # email = models.EmailField(_('email address'), unique=True)
-    phone = models.CharField(max_length=20)
-    address =  models.CharField(max_length=100)
+    phone = models.CharField(max_length=20 , null=True ,blank=True)
+    address =  models.CharField(max_length=100 , null=True ,blank=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True)
     city=models.CharField(max_length=25 , null=True ,blank=True)
     zip=models.CharField(max_length=100 , null=True ,blank=True)
-    image = models.CharField(max_length=200, null=True, blank=True)
-
-
+    image = models.ImageField(upload_to='images', blank=True, null=True)
 
     objects = CustomUserManager()
 
