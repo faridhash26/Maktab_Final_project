@@ -159,4 +159,4 @@ MEDIA_URL = '/images/'
 TEMPLATE_CONTEXT_PROCESSORS = (
     'post.context_processors.add_variable_to_context')
 
-LOGOUT_REDIRECT_URL = 'post:home'
+LOGOUT_REDIRECT_URL = 'users:login_suplier'
