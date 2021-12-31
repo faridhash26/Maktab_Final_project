@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'sass_processor',
 
     'users',
     'orders',
@@ -159,4 +160,17 @@ MEDIA_URL = '/images/'
 TEMPLATE_CONTEXT_PROCESSORS = (
     'post.context_processors.add_variable_to_context')
 
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'sass_processor.finders.CssFinder',
+]
+
+SASS_PROCESSOR_ROOT = [
+    BASE_DIR / 'static'
+]
+
+LOGIN_URL = '/'
+LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = 'users:login_suplier'
