@@ -17,7 +17,7 @@ class LoginView(View):
 
     def get(self, request):
         if request.user.is_authenticated:
-            return redirect(reverse('users:dashboard_admin'))
+            return redirect(reverse('shops:dashboard_admin'))
 
         return render(request, 'adminshop/forms/login.html')
 
