@@ -11,5 +11,12 @@ class CreateShopForm(ModelForm):
             'shop_type': TextInput(attrs={'class':'w3-input w3-border'}),
             'address': Textarea(attrs={'class':"w3-input w3-padding-16 w3-border"}),
         }
+    def save(self, commit=True):
+        isactive = super().save(commit=False)
+        isactive.is_active=False
+        if commit:
+            isactive.save()
+            return isactive
+
 
   
