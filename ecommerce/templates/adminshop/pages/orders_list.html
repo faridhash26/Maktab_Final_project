@@ -1,0 +1,38 @@
+{% extends 'adminshop/base.html' %}
+{% block dashbordcontent %}
+  <!-- Header -->
+  <header class="w3-container" style="padding-top:22px">
+    <h5><b><i class="fa fa-dashboard"></i> My Dashboard</b></h5>
+  </header>
+
+
+  <div class="w3-container">
+    <h5>Orders</h5>
+    {% if order_list %}
+    <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
+      <tr>
+        <th>Product Name</th>
+        <th>Customer Name</th>
+        <th> Order Status</th>
+        <th> More Detail</th>
+        <th> Change Status</th>
+      </tr>
+      {% for order in order_list%}
+      <tr>
+        <td>{{order.order_of_orderitem__product__shop__name}}</td>
+        <td>{{order.customer__username}}</td>
+        <td>{{order.status}}</td>
+        <td><a href="{% url 'orders:order_item_list' order.id %}">More</a></td>
+        <td><a href="">Change</a></td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}
+      <p>No Order</p>
+    {% endif %}
+  </div>
+  <hr>
+  
+
+
+  {% endblock dashbordcontent %}

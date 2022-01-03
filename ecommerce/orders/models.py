@@ -32,7 +32,7 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
-    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True ,related_name="order_of_orderitem")
     qty = models.IntegerField(null=True, blank=True, default=0)
     image = models.ImageField(upload_to='images', blank=True, null=True)
     price =models.DecimalField(max_digits=15, decimal_places=0, null=True, blank=True)

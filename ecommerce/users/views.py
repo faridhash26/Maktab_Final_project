@@ -3,11 +3,14 @@ from django.views.generic.base import TemplateView, View
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
+
+from .forms import RegisterForm
 from .models import CustomUser
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.list import ListView
 from shops.models import Shop
+from django.views.generic.edit import CreateView
 
 # Create your views here.
 
@@ -24,7 +27,6 @@ class LoginView(View):
     def post(self, request):
         theuser = get_object_or_404(
             CustomUser, username=request.POST.get('username'))
-        # print('the user type',theuser.user_type)
         if theuser:
             if theuser.user_type == 'SL':
                 user = authenticate(username=request.POST.get(
@@ -33,14 +35,24 @@ class LoginView(View):
                     login(request, user)
                     return redirect(reverse('shops:dashboard_admin'))
 
-        # print(request.POST.get('username'))
-        # print(request.POST.get('pass'))
-
         return render(request, 'adminshop/forms/login.html')
 
 
-class RegisterView(View):
-    pass
+class RegisterView(CreateView):
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect(reverse('shops:dashboard_admin'))
+        return render(request, 'adminshop/forms/register.html')
+
+    def post(self, request, *args, **kwargs):
+        print('form')
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            if form.cleaned_data['password2']==form.cleaned_data['password']:
+                user = CustomUser.objects.create_user(form.cleaned_data['email'],form.cleaned_data['password'],username=form.cleaned_data['username'] ,phone=form.cleaned_data['phone'],user_type="SL")
+                return redirect(reverse('users:login_suplier'))
+                
+        return render(request, 'adminshop/forms/register.html')
 
 
 class LogoutView(View):
