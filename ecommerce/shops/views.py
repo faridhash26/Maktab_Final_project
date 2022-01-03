@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView, View
-from django.views.generic import UpdateView ,DetailView
+from django.views.generic import UpdateView ,DetailView,FormView
 from django.views.generic.list import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
@@ -47,6 +47,7 @@ class RenderDeleteShop(LoginRequiredMixin,UpdateView):
 class CreateShop(LoginRequiredMixin,View):
     form_class = CreateShopForm
     template_name="adminshop/forms/create_shop.html"
+    
     def get(self, request):
         form = CreateShopForm()
         return render(request, 'adminshop/forms/create_shop.html',{'form': form})
@@ -60,3 +61,10 @@ class CreateShop(LoginRequiredMixin,View):
             form.instance.author = request.user
             form.save()
             return redirect(reverse('shops:dashboard_admin'))
+
+
+class EditShop(LoginRequiredMixin,UpdateView):
+    model = Shop    
+    form_class=CreateShopForm
+    template_name="adminshop/forms/edit_shop.html"
+    success_url ="/shop/dashboard/"

@@ -22,8 +22,8 @@
       <tr>
         <td>{{shop.name}}</td>
         <td>{{shop.shop_type}}</td>
-        <td>{{shop.is_active}}</td>
-        <td><a href="{url   shopid  }">edit</a></td>
+        <td>{{shop.is_active}}</td>edit_shop
+        <td><a href="{% url 'shops:edit_shop' shop.slug %}">edit</a></td>
         <td><a href="{% url 'products:list_product_of_shop' shop.slug %}">Info</a></td>
         <td><a href="{% url 'shops:confirm_delete_shop_admin' shop.slug %}">Delete</a></td>
       </tr>

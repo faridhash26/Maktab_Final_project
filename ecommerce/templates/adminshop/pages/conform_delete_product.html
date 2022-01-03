@@ -9,11 +9,11 @@
   <div class="w3-container">
     <div class="w3-container w3-border w3-large">
       <div class="w3-left-align">
-        <p>Are You Sure For Deleting  - {{shop_detail.name}}-  Shop?</p>
-        <p>Shop Type :{{shop_detail.shop_type}} </p>
+        <p>Are You Sure For Deleting  - {{product_detail.name}}-  Product?</p>
       </div>
     </div>
-    <button class="w3-button w3-dark-grey">Yes  <i class="fa fa-arrow-right"></i></button>
+    <a href="{% url 'shops:dashboard_admin'%}" class="w3-btn w3-black">Return To Shops List</a>
+    <a href="{% url 'products:delete_Product_admin' product.slug  %}" class="w3-button w3-dark-grey">Yes  <i class="fa fa-arrow-right"></i></a>
   </div>
   <hr>
   
