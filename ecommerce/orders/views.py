@@ -1,9 +1,12 @@
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import View
 from django.views.generic.list import ListView
 from django.utils.dateparse import parse_date
 import datetime
+from django.views.generic.edit import UpdateView
+from django.urls import reverse
+from django.urls import reverse_lazy
 
 from .models import Order, OrderItem
 
@@ -33,7 +36,7 @@ class ListOfOrders(LoginRequiredMixin, View):
 
         from_date=datetime.datetime(int(parsed_fromdate[0]) ,int(parsed_fromdate[1]),int(parsed_fromdate[2])).date()
         to_date=datetime.datetime(int(parsed_todate[0]) ,int(parsed_todate[1]),int(parsed_todate[2])).date()   
-        
+
         orderlist = Order.objects.filter(order_of_orderitem__product__shop__author=request.user.id,status=status ,createdAt__gte=from_date,createdAt__lte=to_date ).values(
             'id', 'createdAt','order_of_orderitem__product__shop__name', 'status', 'customer__username').order_by('createdAt')
 
@@ -54,5 +57,12 @@ class ListOfOrderItems(LoginRequiredMixin, ListView):
             'product__name', 'qty', 'price', 'product__image')
         return context
 
-# class ChangeOrderStatus (LoginRequiredMixin,updateview):
-#     pass
+
+class ChangeOrderStatus(LoginRequiredMixin, UpdateView):
+    template_name = "adminshop/forms/change_shop_status.html"
+    model = Order
+    # lookup_field='id'
+    success_url =reverse_lazy("orders:the_orders")
+    fields = [
+        "status",
+    ]

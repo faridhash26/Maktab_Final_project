@@ -1,0 +1,38 @@
+{% extends 'adminshop/base.html' %}
+
+
+{% block dashbordcontent %}
+
+  <!-- Header -->
+  <header class="w3-container" style="padding-top:22px">
+    <h5><b><i class="fa fa-dashboard"></i> My Dashboard</b></h5>
+  </header>
+
+
+  <div class="w3-container">
+    <div class="w3-container w3-border w3-large">
+      <div class="w3-left-align">
+
+        
+      </div>
+    </div>
+    <h5>Orders</h5>
+
+          <form method="post"   action="{% url 'orders:change_order_status' order.id %}">
+            {% csrf_token %}
+              <select name="status" class="w3-select" id="id_status" >
+                <option value="PS" {% if order.status == 'PS' %} selected="" {% endif %}>Processing</option>
+                <option value="CF" {% if order.status == 'CF' %} selected="" {% endif %}>Confirm</option>
+                <option value="PD" {% if order.status == 'PD' %} selected="" {% endif %}>Paid</option>
+                <option value="CN" {% if order.status == 'CN' %} selected="" {% endif %}>Cancel</option>
+              </select>
+              <button class="w3-btn w3-blue">Change</button>
+            </form>
+ 
+
+  </div>
+  <hr>
+  
+
+
+  {% endblock dashbordcontent %}
