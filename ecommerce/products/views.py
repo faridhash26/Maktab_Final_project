@@ -59,8 +59,7 @@ class CreateProduct(LoginRequiredMixin,CreateView):
     success_url ="/shop/dashboard/"
 
     def get(self, request, *args, **kwargs):
-        print('the kwargs ',kwargs)
-        print('***********************************')
+
         obj = get_object_or_404(Shop ,slug=kwargs["slug"])
         form = CreateProductForm()
         return render(request, 'adminshop/forms/create_product.html',{'form': form , 'shop_slug':obj})
@@ -68,7 +67,7 @@ class CreateProduct(LoginRequiredMixin,CreateView):
     def post(self, request, *args, **kwargs):
         obj = get_object_or_404(Shop ,slug=kwargs["slug"])
 
-        form = CreateProductForm(request.POST)
+        form = CreateProductForm(request.POST , request.FILES)
         if form.is_valid():
             form.instance.shop = obj
             form.save()

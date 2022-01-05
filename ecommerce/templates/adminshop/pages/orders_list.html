@@ -1,5 +1,8 @@
 {% extends 'adminshop/base.html' %}
+
+
 {% block dashbordcontent %}
+
   <!-- Header -->
   <header class="w3-container" style="padding-top:22px">
     <h5><b><i class="fa fa-dashboard"></i> My Dashboard</b></h5>
@@ -7,21 +10,50 @@
 
 
   <div class="w3-container">
+    <div class="w3-container w3-border w3-large">
+      <div class="w3-left-align">
+        <form action="{% url 'orders:the_orders'  %}" method="POST">
+          {% csrf_token %}
+          <label>From</label>
+        <input type="date" value="{{from_date}}" class="w3-input" name="fromdate" >
+
+        <label>To</label>
+        <input type="date" value="{{to_date}}" class="w3-input" name="todate">
+
+        <div class="w3-select" style="width:200px;">
+          <select  class="w3-select"  name="option">
+            <option value=" ">None</option>
+            <option value="CF">Confirm</option>
+            <option value="PS">Processing</option>
+            <option value="PD">Paid</option>
+            <option value="CN">Cancel</option>
+          </select>
+        </div>
+        <button class="w3-btn w3-blue">Search</button>
+        </form>
+        
+      </div>
+    </div>
     <h5>Orders</h5>
     {% if order_list %}
     <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
-      <tr>
-        <th>Product Name</th>
+      <tr>{% load tz %}
+        {% localtime on %}
+        <th>{{ value }}</th>
+        {% endlocaltime %}
+
         <th>Customer Name</th>
         <th> Order Status</th>
+        <th>Create At</th>
         <th> More Detail</th>
         <th> Change Status</th>
       </tr>
-      {% for order in order_list%}
+      {% for order in order_list %}
       <tr>
         <td>{{order.order_of_orderitem__product__shop__name}}</td>
         <td>{{order.customer__username}}</td>
         <td>{{order.status}}</td>
+        <td>{{order.createdAt}}</td>
         <td><a href="{% url 'orders:order_item_list' order.id %}">More</a></td>
         <td><a href="">Change</a></td>
       </tr>

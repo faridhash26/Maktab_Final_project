@@ -28,7 +28,15 @@
       {% for product in product_list%}
       <tr>
         <td>{{product.name}}</td>
-        <td>{{product.image}}</td>
+        {% if product.image %}
+        <td>
+          <img src="/images/{{product.image}}" alt="Forest" class="w3-hover-grayscale" style="width:80px">
+        </td>
+        {% else %}
+        <td>
+          -
+        </td>
+        {% endif %}
         <td>{{product.price}}</td>
         <td>{{product.stock}}</td>
         <td>{{product.is_published}}</td>

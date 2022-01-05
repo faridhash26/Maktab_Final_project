@@ -13,14 +13,24 @@
       <tr>
         <th>Product Name</th>
         <th>Quantity</th>
-        <th>Price</th>
         <th>Image</th>
+        <th>Price</th>
 
       </tr>
       {% for orderitem in order_item_list%}
       <tr>
         <td>{{orderitem.product__name}}</td>
         <td>{{orderitem.qty}}</td>
+        
+        {% if orderitem.product__image %}
+        <td>
+          <img src="/images/{{orderitem.product__image}}" alt="Forest" class="w3-hover-grayscale" style="width:80px">
+        </td>
+        {% else %}
+        <td>
+          -
+        </td>
+        {% endif %}
         <td>{{orderitem.price}}</td>
         <td>{{orderitem.product__image.url}}</td>
       </tr>

@@ -7,7 +7,7 @@
 
 
   <div class="w3-container">
-    <form action="{% url 'products:new_product_admin' shop_slug.slug %}" method="post" >
+    <form action="{% url 'products:new_product_admin' shop_slug.slug %}" enctype="multipart/form-data" method="post" >
         {% csrf_token %}
         {{ form.as_p }}
 
