@@ -5,7 +5,7 @@
 
   <!-- Header -->
   <header class="w3-container" style="padding-top:22px">
-    <h5><b><i class="fa fa-dashboard"></i> My Dashboard</b></h5>
+    <h5><b><i class="fa fa-dashboard"></i> Orders </b></h5>
   </header>
 
 
@@ -34,14 +34,10 @@
         
       </div>
     </div>
-    <h5>Orders</h5>
     {% if order_list %}
     <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
-      <tr>{% load tz %}
-        {% localtime on %}
-        <th>{{ value }}</th>
-        {% endlocaltime %}
-
+      <tr>
+        <th>Shop Name</th>
         <th>Customer Name</th>
         <th> Order Status</th>
         <th>Create At</th>
@@ -60,7 +56,9 @@
       {% endfor %}
     </table>
     {% else %}
-      <p>No Order</p>
+    <div class="w3-panel w3-padding-20 w3-center w3-pale-green w3-round-xxlarge w3-border">
+      <h3>No Order!</h3>
+    </div>
     {% endif %}
   </div>
   <hr>

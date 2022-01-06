@@ -2,12 +2,11 @@
 {% block dashbordcontent %}
   <!-- Header -->
   <header class="w3-container" style="padding-top:22px">
-    <h5><b><i class="fa fa-dashboard"></i> My Dashboard</b></h5>
+    <h5><b><i class="fa fa-dashboard"></i> Shops</b></h5>
   </header>
 
 
   <div class="w3-container">
-    <h5>SHOPS</h5>
     {% if messages %}
                     {% for message  in messages %}
                     <div class="w3-panel w3-pale-green w3-border">
@@ -20,7 +19,7 @@
       <tr>
         <th>Shop Name</th>
         <th>Shop Type</th>
-        <th>Is Active</th>
+        <th>Is Accepted</th>
         <th>Edit</th>
         <th>Products Of Shop</th>
         <th>Delete</th>
@@ -29,7 +28,7 @@
       <tr>
         <td>{{shop.name}}</td>
         <td>{{shop.shop_type}}</td>
-        <td>{{shop.is_active}}</td>edit_shop
+        <td>{{shop.is_active}}</td>
         <td><a href="{% url 'shops:edit_shop' shop.slug %}">edit</a></td>
         <td><a href="{% url 'products:list_product_of_shop' shop.slug %}">More</a></td>
         <td><a href="{% url 'shops:confirm_delete_shop_admin' shop.slug %}">Delete</a></td>
@@ -37,7 +36,9 @@
       {% endfor %}
     </table>
     {% else %}
-      <p>no shop</p>
+    <div class="w3-panel w3-padding-20 w3-center w3-pale-green w3-round-xxlarge w3-border">
+        <h3 class="w3-center">You Have No Shop!</h3>
+      </div>
     {% endif %}
     <br>
     <a  href="{% url 'shops:create_shop' %}" class="w3-button w3-dark-grey">New Shop  <i class="fa fa-arrow-right"></i></a>

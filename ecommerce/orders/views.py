@@ -14,8 +14,13 @@ from .models import Order, OrderItem
 
 
 class ListOfOrders(LoginRequiredMixin, View):
-
+    """
+    list o f orders in admin panel 
+    """
     def get(self, request, *args, **kwargs):
+        """
+        list of all orders
+        """
         today = str(datetime.date.today())
         parsed_fromdate=today.split("-")
         from_date=str(datetime.datetime(int(parsed_fromdate[0]) ,int(parsed_fromdate[2]),int(parsed_fromdate[1])).date())
@@ -27,6 +32,9 @@ class ListOfOrders(LoginRequiredMixin, View):
         return render(request, 'adminshop/pages/orders_list.html', {'order_list': orderlist,"from_date":from_date,"to_date":to_date })
 
     def post(self, request, *args, **kwargs):
+        """
+        filtering the list of orders
+        """
         fromdate = request.POST.get('fromdate')
         todate = request.POST.get('todate')
         status = request.POST.get('option')
@@ -44,6 +52,9 @@ class ListOfOrders(LoginRequiredMixin, View):
 
 
 class ListOfOrderItems(LoginRequiredMixin, ListView):
+    """
+    list of order items by each order 
+    """
     template_name = "adminshop/pages/order_items.html"
 
     def get_queryset(self):
@@ -59,6 +70,9 @@ class ListOfOrderItems(LoginRequiredMixin, ListView):
 
 
 class ChangeOrderStatus(LoginRequiredMixin, UpdateView):
+    """
+    changing the status of order
+    """
     template_name = "adminshop/forms/change_shop_status.html"
     model = Order
     success_url =reverse_lazy("orders:the_orders")

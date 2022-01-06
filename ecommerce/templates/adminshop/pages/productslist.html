@@ -2,7 +2,7 @@
 {% block dashbordcontent %}
   <!-- Header -->
   <header class="w3-container" style="padding-top:22px">
-    <h5><b><i class="fa fa-dashboard"></i> My Dashboard</b></h5>
+    <h5><b><i class="fa fa-dashboard"></i> Products </b></h5>
   </header>
 
 
@@ -13,7 +13,6 @@
         <p>Shop Type : {{shop_name.shop_type}}</p>
       </div>
     </div>
-    <h5>Products</h5>
     {% if product_list %}
     <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
       <tr>
@@ -46,7 +45,9 @@
       {% endfor %}
     </table>
     {% else %}
-      <p>no product</p>
+    <div class="w3-panel w3-padding-20 w3-center w3-pale-green w3-round-xxlarge w3-border">
+      <h3>Shop Have No Product!</h3>
+    </div>
     {% endif %}
     <br>
     <a  href="{% url 'products:new_product_admin' shop_name.slug %}" class="w3-button w3-dark-grey">New Product  <i class="fa fa-arrow-right"></i></a>

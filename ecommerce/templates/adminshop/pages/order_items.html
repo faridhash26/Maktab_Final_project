@@ -2,7 +2,7 @@
 {% block dashbordcontent %}
   <!-- Header -->
   <header class="w3-container" style="padding-top:22px">
-    <h5><b><i class="fa fa-dashboard"></i> My Dashboard</b></h5>
+    <h5><b><i class="fa fa-dashboard"></i> Order Items</b></h5>
   </header>
 
 
@@ -37,7 +37,9 @@
       {% endfor %}
     </table>
     {% else %}
-      <p>No Order</p>
+    <div class="w3-panel w3-padding-20 w3-center w3-pale-green w3-round-xxlarge w3-border">
+      <h3>No Order Item!</h3>
+    </div>
     {% endif %}
   </div>
   <hr>

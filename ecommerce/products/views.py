@@ -15,6 +15,9 @@ from shops.models import Shop
 # Create your views here.
 
 class ProductsOfShop(LoginRequiredMixin, ListView):
+    """
+    list of product in each shop 
+    """
     template_name = "adminshop/pages/productslist.html"
 
 
@@ -31,6 +34,9 @@ class ProductsOfShop(LoginRequiredMixin, ListView):
 
 
 class ConfirmDeleteProduct(LoginRequiredMixin,DetailView):
+    """
+    conforming page for  the deletion of product
+    """
     model=Product
     template_name = "adminshop/pages/conform_delete_product.html"
     def get_context_data(self, *args, **kwargs):
@@ -39,6 +45,9 @@ class ConfirmDeleteProduct(LoginRequiredMixin,DetailView):
         return context
 
 class DeleteProduct(LoginRequiredMixin,DeleteView):
+    """
+    delettion product
+    """
     model=Product
     success_url ="shops:dashboard_admin"
     def get(self, request, *args, **kwargs):
@@ -47,12 +56,18 @@ class DeleteProduct(LoginRequiredMixin,DeleteView):
 
 
 class EditProduct(LoginRequiredMixin,UpdateView):
+    """
+        editiing the product
+    """
     model = Product    
     form_class=CreateProductForm
     template_name="adminshop/forms/edit_product.html"
     success_url ="/shop/dashboard/"
 
 class CreateProduct(LoginRequiredMixin,CreateView):
+    """
+    creating the new product
+    """
     model = Product
     form_class=CreateProductForm
     template_name="adminshop/forms/create_product.html"

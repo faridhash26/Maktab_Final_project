@@ -11,13 +11,16 @@ from django.urls import reverse_lazy
 
 from .forms import RegisterForm, UpdateProfileUserForm
 from .models import CustomUser
-from shops.models import Shop
 from django.views.generic.edit import CreateView, UpdateView
 
 # Create your views here.
 
 
 class LoginView(View):
+    """
+    rendering the login page and user can login 
+    """
+
     template_name = 'adminshop/forms/login.html'
 
     def get(self, request):
@@ -55,6 +58,9 @@ class LoginView(View):
 
 
 class RegisterView(CreateView):
+    """
+    
+    """
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect(reverse('shops:dashboard_admin'))

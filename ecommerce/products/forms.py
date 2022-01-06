@@ -5,7 +5,7 @@ from .models import Product
 class CreateProductForm(ModelForm):
     class Meta:
         model = Product
-        fields = ('name', 'image', 'price','weight','stock', 'is_published','tag','category')
+        fields = ('name', 'image', 'price','weight','stock', 'is_published')
         widgets = {
             'name': TextInput(attrs={'class':'w3-input w3-border'}),
             'image': FileInput(attrs={'class':'w3-input w3-border'}),
@@ -13,6 +13,5 @@ class CreateProductForm(ModelForm):
             'weight': NumberInput(attrs={'class':'w3-input w3-border'}),
             'stock': NumberInput(attrs={'class':'w3-input w3-border'}),
             'is_published': CheckboxInput(),
-            "tag":SelectMultiple(),
-            "category":SelectMultiple(),
+
         }

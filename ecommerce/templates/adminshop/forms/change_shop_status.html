@@ -5,7 +5,7 @@
 
   <!-- Header -->
   <header class="w3-container" style="padding-top:22px">
-    <h5><b><i class="fa fa-dashboard"></i> My Dashboard</b></h5>
+    <h5><b><i class="fa fa-dashboard"></i> Change Shop Status </b></h5>
   </header>
 
 
@@ -16,8 +16,6 @@
         
       </div>
     </div>
-    <h5>Orders</h5>
-
           <form method="post"   action="{% url 'orders:change_order_status' order.id %}">
             {% csrf_token %}
               <select name="status" class="w3-select" id="id_status" >

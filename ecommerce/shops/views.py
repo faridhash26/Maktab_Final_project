@@ -5,6 +5,7 @@ from django.views.generic.list import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.contrib import messages
 
 from .forms import CreateShopForm
 from .models import Shop
@@ -14,6 +15,10 @@ from django.views.generic.edit import CreateView
 
 
 class DashboardView(LoginRequiredMixin, ListView):
+    """
+    the first page of dashboard in panel admin 
+    showing the list of shops for user
+    """
     template_name = "adminshop/pages/shopslist.html"
 
     def get_queryset(self):
@@ -27,6 +32,9 @@ class DashboardView(LoginRequiredMixin, ListView):
         return context
 
 class RenderConfirmDeleteShop(LoginRequiredMixin,DetailView):
+    """
+    showing conform pasge for deleting shop
+    """
     model=Shop
     template_name = "adminshop/pages/conform_deleteshop.html"
     def get_context_data(self, *args, **kwargs):
@@ -35,6 +43,9 @@ class RenderConfirmDeleteShop(LoginRequiredMixin,DetailView):
         return context
 
 class RenderDeleteShop(LoginRequiredMixin,UpdateView):
+    """
+    deleting shop
+    """
     model=Shop
     def get(self, request, *args, **kwargs):
         object = get_object_or_404(Shop,slug=self.kwargs['slug'])
@@ -45,6 +56,9 @@ class RenderDeleteShop(LoginRequiredMixin,UpdateView):
 
 
 class CreateShop(LoginRequiredMixin,View):
+    """
+    createing the new shop
+    """
     form_class = CreateShopForm
     template_name="adminshop/forms/create_shop.html"
     
@@ -55,6 +69,7 @@ class CreateShop(LoginRequiredMixin,View):
     def post(self, request):
         obj = Shop.objects.filter(is_active=False ,author=request.user).count()
         if obj>0:
+            messages.warning(request, f'you have an unaccepted shop.  this shop must be activated then you can create new shop !')
             return redirect(reverse('shops:dashboard_admin'))
         form = CreateShopForm(request.POST)
         if form.is_valid():
@@ -64,6 +79,9 @@ class CreateShop(LoginRequiredMixin,View):
 
 
 class EditShop(LoginRequiredMixin,UpdateView):
+    """
+    edting the shop info 
+    """
     model = Shop    
     form_class=CreateShopForm
     template_name="adminshop/forms/edit_shop.html"
