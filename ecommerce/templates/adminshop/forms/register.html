@@ -44,7 +44,13 @@
 					<span class="login100-form-title p-b-34 p-t-27">
 						register
 					</span>
-
+					{% if messages %}
+                    	{% for message  in messages %}
+							<div class="alert alert-warning" role="alert">
+                            	{{ message }}
+                        	</div>
+                    	{% endfor%}
+                	{% endif %}
 					<div class="wrap-input100 validate-input" data-validate = "Enter username">
 						<input class="input100" type="text" name="username" placeholder="Username">
 						<span class="focus-input100" data-placeholder="&#xf207;"></span>

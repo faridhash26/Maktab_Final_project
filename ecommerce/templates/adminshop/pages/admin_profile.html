@@ -1,0 +1,42 @@
+{% extends 'adminshop/base.html' %}
+{% load static %}
+
+{% block dashbordcontent %}
+  <!-- Header -->
+  <header class="w3-container" style="padding-top:22px">
+    <h5><b><i class="fa fa-dashboard"></i> My Dashboard</b></h5>
+  </header>
+
+
+  <div class="w3-container">
+    <h5>Profile</h5>
+    {% if messages %}
+        {% for message  in messages %}
+            <div class="w3-panel w3-pale-green w3-border">
+                <h3>{{ message }}</h3>
+            </div>
+        {% endfor%}
+    {% endif %}
+    <div class="w3-padding-64 w3-center">
+        {% if user.image %}
+            <img src={{ user.image.url }} class="w3-margin w3-circle" alt="Person" style="width: 200px; height: 200px;">
+        {% else %}
+            <img src="{% static  'images/userprofle.png' %}" class="w3-margin w3-circle" style="width: 200px; height: 200px;" alt="Person" style="width:50%">
+        {% endif %}
+        <div class="= w3-padding-large">
+          <h4>Username : {{user.username}}</h4>
+          <h4>Email : {{user.email}}</h4>
+          <h4>City : {{user.city}}</h4>
+          <h4>zip Code : {{user.zip}}</h4>
+          <h4>Address : {{user.address}}</h4>
+        </div>
+      </div>
+    
+    <br>
+    <a  href="{% url 'users:update_admin_profile' %}" class="w3-button w3-dark-grey">Edit Information  <i class="fa fa-arrow-right"></i></a>
+  </div>
+  <hr>
+  
+
+
+  {% endblock dashbordcontent %}
