@@ -12,6 +12,13 @@
   <div class="w3-container">
     <div class="w3-container w3-border w3-large">
       <div class="w3-left-align">
+        {% if messages %}
+            {% for message  in messages %}
+              <div class="w3-panel w3-pale-green w3-border">
+                <h3>{{ message }}</h3>
+              </div>
+            {% endfor%}
+        {% endif %}
         <form action="{% url 'orders:the_orders'  %}" method="POST">
           {% csrf_token %}
           <label>From</label>

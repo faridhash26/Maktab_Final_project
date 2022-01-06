@@ -1,9 +1,10 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import View
+from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 import datetime
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import DeleteView, UpdateView
 from django.urls import reverse
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -27,7 +28,7 @@ class ListOfOrders(LoginRequiredMixin, View):
         to_date=str(datetime.datetime(int(parsed_fromdate[0]) ,int(parsed_fromdate[2]),int(parsed_fromdate[1])).date())   
 
         orderlist = Order.objects.filter(order_of_orderitem__product__shop__author=request.user.id).values(
-            'id','createdAt', 'order_of_orderitem__product__shop__name', 'status', 'customer__username').order_by('-createdAt')
+            'id','createdAt', 'order_of_orderitem__product__shop__name', 'status', 'customer__username').order_by('-createdAt').distinct()
 
         return render(request, 'adminshop/pages/orders_list.html', {'order_list': orderlist,"from_date":from_date,"to_date":to_date })
 
@@ -45,8 +46,8 @@ class ListOfOrders(LoginRequiredMixin, View):
         from_date=datetime.datetime(int(parsed_fromdate[0]) ,int(parsed_fromdate[1]),int(parsed_fromdate[2])).date()
         to_date=datetime.datetime(int(parsed_todate[0]) ,int(parsed_todate[1]),int(parsed_todate[2])).date()   
 
-        orderlist = Order.objects.filter(order_of_orderitem__product__shop__author=request.user.id,status=status ,createdAt__gte=from_date,createdAt__lte=to_date ).values(
-            'id', 'createdAt','order_of_orderitem__product__shop__name', 'status', 'customer__username').order_by('-createdAt')
+        orderlist = Order.objects.filter(order_of_orderitem__product__shop__author=request.user.id,status=status ,createdAt__gte=from_date,createdAt__lte=to_date ).annotate().values(
+            'id', 'createdAt','order_of_orderitem__product__shop__name', 'status', 'customer__username').order_by('-createdAt').distinct()
 
         return render(request, 'adminshop/pages/orders_list.html', {'order_list': orderlist ,"from_date":fromdate,"to_date":todate })
 
@@ -65,7 +66,7 @@ class ListOfOrderItems(LoginRequiredMixin, ListView):
         obj = get_object_or_404(Order, id=self.kwargs.get('oreder_id'))
 
         context['order_item_list'] = OrderItem.objects.filter(order=obj ,product__shop__author__id = self.request.user.id).values(
-            'product__name', 'qty', 'price', 'product__image')
+            'product__name', 'qty', 'price', 'product__image' ,'id' )
         return context
 
 
@@ -79,3 +80,18 @@ class ChangeOrderStatus(LoginRequiredMixin, UpdateView):
     fields = [
         "status",
     ]
+
+
+class ConformCancelOrderItem(LoginRequiredMixin, DetailView):
+    template_name = "adminshop/pages/cancelproduct.html"
+    model = OrderItem
+    context_object_name="orderitem"
+
+
+class CancelOrderItem(LoginRequiredMixin ,DeleteView):
+    model = OrderItem
+    success_url=reverse_lazy("orders:the_orders")
+    def get(self, request, *args, **kwargs):
+        self.object = get_object_or_404(OrderItem , id =kwargs["orderitem_id"]).delete()
+        messages.warning(request, f'order item successfuly deleted')
+        return redirect(reverse('orders:the_orders')) 
