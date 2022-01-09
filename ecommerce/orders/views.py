@@ -42,11 +42,20 @@ class ListOfOrders(LoginRequiredMixin, View):
 
         parsed_fromdate=fromdate.split("-")
         parsed_todate=todate.split("-")
+        orderlist = Order.objects.filter(order_of_orderitem__product__shop__author=request.user.id )
 
-        from_date=datetime.datetime(int(parsed_fromdate[0]) ,int(parsed_fromdate[1]),int(parsed_fromdate[2])).date()
-        to_date=datetime.datetime(int(parsed_todate[0]) ,int(parsed_todate[1]),int(parsed_todate[2])).date()   
+        if fromdate:
+            from_date=datetime.datetime(int(parsed_fromdate[0]) ,int(parsed_fromdate[1]),int(parsed_fromdate[2])).date()
+            orderlist = orderlist.filter(createdAt__gte=from_date)
 
-        orderlist = Order.objects.filter(order_of_orderitem__product__shop__author=request.user.id,status=status ,createdAt__gte=from_date,createdAt__lte=to_date ).annotate().values(
+        if  todate:
+            to_date=datetime.datetime(int(parsed_todate[0]) ,int(parsed_todate[1]),int(parsed_todate[2])).date()   
+            orderlist=orderlist.filter(createdAt__lte=to_date)
+        
+        if status:
+            orderlist=orderlist.filter(status=status )
+
+        orderlist=orderlist.values(
             'id', 'createdAt','order_of_orderitem__product__shop__name', 'status', 'customer__username').order_by('-createdAt').distinct()
 
         return render(request, 'adminshop/pages/orders_list.html', {'order_list': orderlist ,"from_date":fromdate,"to_date":todate })
@@ -95,3 +104,46 @@ class CancelOrderItem(LoginRequiredMixin ,DeleteView):
         self.object = get_object_or_404(OrderItem , id =kwargs["orderitem_id"]).delete()
         messages.warning(request, f'order item successfuly deleted')
         return redirect(reverse('orders:the_orders')) 
+    
+
+
+
+
+from django.db.models import Sum
+from django.http import JsonResponse
+
+
+
+class RenderReportSalesPage(LoginRequiredMixin ,View):
+    model=Order
+
+    def get(self, request, *args, **kwargs):
+        return render(request, 'adminshop/pages/reports_sales.html' )
+
+class ReportSales(LoginRequiredMixin ,View):
+    def get(self, request, *args, **kwargs):
+
+        labels = ["2020/Q1", "2020/Q2", "2020/Q3", "2020/Q4"]
+        data = [26900, 28700, 27300, 29200]
+
+        # queryset = City.objects.values('country__name').annotate(country_population=Sum('population')).order_by('-country_population')
+        # for entry in queryset:
+        #     labels.append(entry['country__name'])
+        #     data.append(entry['country_population'])
+        # https://stackoverflow.com/questions/5926871/get-total-for-each-month-using-django
+        # Sales.objects.filter(date_sold__year='2010').extra({'month' : "MONTH(date_sold)"}).values_list('month').annotate(total_item=Count('item'))
+
+        return JsonResponse(data={
+            'labels': labels,
+            'data': data,
+        })
+
+
+
+
+
+# ===============
+# api
+# ===============
+# class CreateOrderByCustomer():
+#     pass

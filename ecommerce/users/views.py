@@ -1,13 +1,20 @@
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView, View
-from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic.detail import DetailView
 from django.urls import reverse_lazy
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import generics
+from rest_framework import generics,permissions
+from .serializers import  UserSerializer,UserSerializerProfile
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
 from .forms import RegisterForm, UpdateProfileUserForm
 from .models import CustomUser
@@ -99,3 +106,69 @@ class UpdateUserProfile(LoginRequiredMixin,UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+# =====================
+# api
+# =====================
+
+
+class RegisterAPI(generics.CreateAPIView):
+    model = CustomUser
+    
+    permission_classes = [
+        permissions.AllowAny # Or anon users can't register
+    ]
+    serializer_class = UserSerializer
+
+    def create(self, request, *args, **kwargs):
+
+        if request.data["password"] == request.data["password2"]:
+            serializer = self.get_serializer(data=request.data)
+            isvalid =serializer.is_valid(raise_exception=True)
+            if isvalid:
+                self.perform_create(serializer)
+                headers = self.get_success_headers(serializer.data)
+                return Response({"Success": "user successfuly registered."}, status=status.HTTP_201_CREATED, headers=headers)
+        return Response({"message": "your field is worng."}, status=status.HTTP_400_BAD_REQUEST )
+
+    
+
+class LoginCustomer(APIView):
+    permission_classes = [
+        permissions.AllowAny # Or anon users can't register
+    ]
+
+    def post(self, request):
+        if 'username' not in request.data or 'password' not in request.data:
+             return Response({'msg': 'Credentials missing'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+        user = authenticate(username=request.data.get(
+                    'username'), password=request.data.get('password'))
+        if user is not None and user.user_type=="CT":
+            refresh = RefreshToken.for_user(user)
+
+            return Response({'msg': 'Login Success','access':str(refresh.access_token)}, status=status.HTTP_200_OK)
+        return Response({'msg': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class LogoutApiView(APIView):
+    def get(self, request):
+        logout(request)
+
+        return Response({'msg': 'Successfully Logged out'}, status=status.HTTP_200_OK)
+
+
+
+
+class ProfileCustomerApi(generics.RetrieveUpdateAPIView):
+    permission_classes = (IsAuthenticated,)    
+    serializer_class = UserSerializerProfile
+    lookup_field = 'id'
+    
+    def get_object(self):
+        return  get_object_or_404(CustomUser, id=self.kwargs["id"])
+
+  
+
+

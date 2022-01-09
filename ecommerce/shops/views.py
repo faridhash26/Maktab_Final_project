@@ -86,3 +86,14 @@ class EditShop(LoginRequiredMixin,UpdateView):
     form_class=CreateShopForm
     template_name="adminshop/forms/edit_shop.html"
     success_url ="/shop/dashboard/"
+
+
+
+# class ListOfShopsForCustomer():
+#     pass
+
+# class TypeOfShops():
+#     pass
+
+# class ProductOfShop():
+#     pass
