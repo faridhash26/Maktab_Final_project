@@ -10,6 +10,6 @@ urlpatterns = [
         path('userprofile/update/' ,views.UpdateUserProfile.as_view()  ,name="update_admin_profile" ),
         path('register/api/' ,views.RegisterAPI.as_view() , name='register_api' ),
         path('login/api/',views.LoginCustomer.as_view(),name='login_api'),
-        path('profile/api/<int:id>/' ,views.ProfileCustomerApi.as_view() , name="profile_api_view"),
+        path('profile/api/' ,views.ProfileCustomerApi.as_view() , name="profile_api_view"),
 
 ]

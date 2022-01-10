@@ -164,10 +164,9 @@ class LogoutApiView(APIView):
 class ProfileCustomerApi(generics.RetrieveUpdateAPIView):
     permission_classes = (IsAuthenticated,)    
     serializer_class = UserSerializerProfile
-    lookup_field = 'id'
     
     def get_object(self):
-        return  get_object_or_404(CustomUser, id=self.kwargs["id"])
+        return  get_object_or_404(CustomUser, id=self.request.user.id)
 
   
 

@@ -60,18 +60,6 @@ class ProductSerializer(serializers.ModelSerializer):
         model=Product
         fields=["id" , "name" , "price" , "stock" , "weight" ,"tag"]
 
-    # def to_representation(self, data):
-    #     req = self.context['request'].query_params['price']
-    #     data = data.filter(price=req)
-
-    #     # if req.query_params['price']:
-    #     #     data = data.objects.filter(price=req.query_params['price'])
-    #     # if req.query_params['is_stock']:
-    #     #     if req.query_params['is_stock'] =="True":
-    #     #         data = data.filter(stock__gt=0)
-    #     # if req.query_params['tag']:
-    #     #     data = data.filter(tag=req.query_params['tag'])
-    #     return super(ProductSerializer, self).to_representation(data)
 
 
 class ProductOfShop(serializers.ModelSerializer):
