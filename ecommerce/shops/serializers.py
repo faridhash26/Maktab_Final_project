@@ -9,17 +9,6 @@ class ShopSerializer(serializers.ModelSerializer):
         fields=["id","shop_type" , "name" ,"address" ,"slug"]
 
 
-
-
-
-
-
-
-
-
-
-
-
 class FilteredListSerializer(serializers.ListSerializer):
 
     def to_representation(self, data):
@@ -67,3 +56,9 @@ class ProductOfShop(serializers.ModelSerializer):
     class Meta:
         model=Shop
         fields=["id","shop_type" , "name" ,"products"]
+
+
+class ShopType(serializers.ModelSerializer):
+    class Meta:
+        model=Shop
+        fields=["shop_type" ]

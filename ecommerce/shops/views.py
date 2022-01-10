@@ -9,7 +9,7 @@ from django.contrib import messages
 from rest_framework import generics
 from rest_framework.response import Response
 
-from .serializers import ShopSerializer,ProductOfShop
+from .serializers import ShopSerializer,ProductOfShop, ShopType
 from .filters import ShopFilter,PruductOfShopFilter
 from .forms import CreateShopForm
 from .models import Shop
@@ -103,10 +103,10 @@ class ListOfShopsForCustomer(generics.ListAPIView):
         return queryset
 
 class TypeOfShops(generics.ListAPIView):
-    serializer_class = ShopSerializer
+    serializer_class = ShopType
     model=Shop
     def get_queryset(self):
-        queryset = self.model.objects.values('shop_type').distinct()
+        queryset = self.model.objects.distinct('shop_type')
         return queryset
 
 

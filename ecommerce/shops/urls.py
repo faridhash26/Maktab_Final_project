@@ -11,5 +11,6 @@ urlpatterns = [
     path('dashboard/create_shop/' ,views.CreateShop.as_view()  ,name="create_shop" ),
     path('dashboard/edit_shop/<slug:slug>/' ,views.EditShop.as_view()  ,name="edit_shop" ),
     path('listofshops/api/' ,views.ListOfShopsForCustomer.as_view() , name="list_of_shops"),
+    path('list/type/shops/' ,views.TypeOfShops.as_view() , name='type_of_shops'),
     path('shop/<slug:shop_slug>/product/',views.ProductOfShop.as_view() , name="product_of_shop"),
 ]
