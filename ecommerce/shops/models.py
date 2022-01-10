@@ -25,7 +25,19 @@ def unique_slugify(instance, slug):
 
 
 class Shop(models.Model):
-    shop_type = models.CharField(max_length=255)
+    SUP = "SUP"
+    HYP = "HYP"
+    BAK = "BAKERY"
+    FRU = "FRUIT"
+    BOOK = "BOOKSHOP"
+    TYPE_CHOICES = (
+        (SUP, "Supermarket"),
+        (HYP, "Hypermarket"),
+        (BAK, "Bakery"),
+        (FRU, "fruit store"),
+        (BOOK, "Bookshop")
+    )
+    shop_type = models.CharField(max_length=17, choices=TYPE_CHOICES, default=SUP)
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=255)
     is_active=models.BooleanField(default=False)

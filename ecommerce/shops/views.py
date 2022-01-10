@@ -6,7 +6,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.contrib import messages
+from rest_framework import generics
+from rest_framework.response import Response
 
+from .serializers import ShopSerializer,ProductOfShop
+from .filters import ShopFilter,PruductOfShopFilter
 from .forms import CreateShopForm
 from .models import Shop
 from django.views.generic.edit import CreateView
@@ -89,11 +93,27 @@ class EditShop(LoginRequiredMixin,UpdateView):
 
 
 
-# class ListOfShopsForCustomer():
-#     pass
+class ListOfShopsForCustomer(generics.ListAPIView):
+    serializer_class = ShopSerializer
+    filterset_class = ShopFilter
+    model=Shop
 
-# class TypeOfShops():
-#     pass
+    def get_queryset(self):
+        queryset = self.model.objects.filter(is_active=True)
+        return queryset
 
-# class ProductOfShop():
-#     pass
+class TypeOfShops(generics.ListAPIView):
+    serializer_class = ShopSerializer
+    model=Shop
+    def get_queryset(self):
+        queryset = self.model.objects.values('shop_type').distinct()
+        return queryset
+
+
+class ProductOfShop(generics.RetrieveAPIView):
+    model=Shop
+    serializer_class = ProductOfShop
+    lookup_field = 'slug'
+    lookup_url_kwarg = 'shop_slug'
+    queryset=Shop.objects.all()
+

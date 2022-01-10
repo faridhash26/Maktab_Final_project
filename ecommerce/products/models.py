@@ -4,7 +4,7 @@ import random
 import string
 from django.contrib.auth import get_user_model
 from shops.models import Shop
-
+from django.core.validators import MinValueValidator
 # Create your models here.
 
 User = get_user_model()
@@ -59,8 +59,9 @@ class Product(models.Model):
     tag = models.ManyToManyField(Tag  , blank=True)
     category = models.ManyToManyField(Category ,blank=True)
     slug = models.SlugField(max_length=255, unique=True, blank=True)
-    shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE ,related_name="product_shop")
     is_published=models.BooleanField(default=False)
+    discount=models.DecimalField(validators=[MinValueValidator(0.00)],max_digits=5 , decimal_places=2,null=True, blank=True)
 
     def __str__(self):
         return self.name

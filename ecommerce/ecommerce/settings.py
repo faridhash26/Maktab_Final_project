@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'sass_processor',
     'rest_framework',
-
+    'django_filters',
     # the apps 
 
     'users',
