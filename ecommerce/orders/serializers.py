@@ -40,3 +40,8 @@ class UpdateOrderItem(serializers.ModelSerializer):
             prodcut.save()
         return oreder_item
 
+class PaymentShopSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Order
+        fields = ['customer',"createdAt" ,"updated_at","status","totalPrice" , "taxPrice"]
+        read_only_fields=('customer',"createdAt" ,"updated_at","status","totalPrice" , "taxPrice" )

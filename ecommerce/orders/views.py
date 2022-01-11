@@ -14,7 +14,7 @@ from .models import Order, OrderItem
 from rest_framework.response import Response
 from rest_framework import status
 
-from .serializers import OrderSerializer,UpdateOrderItem
+from .serializers import OrderSerializer, PaymentShopSerializer,UpdateOrderItem
 from products.models import Product
 # Create your views here.
 
@@ -188,3 +188,32 @@ class DeleteOrderItem(generics.DestroyAPIView):
 
         return Response( {"error":"you can just delete item when status is processing!"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
+from django.db.models import Sum
+from decimal import *
+
+
+class Paymentview(generics.UpdateAPIView):
+    permission_classes = (IsAuthenticated,)
+    model=Order
+    queryset=Order.objects.all()
+    lookup_field="id"
+    lookup_url_kwarg="order_id"
+    serializer_class=PaymentShopSerializer
+
+    def put(self, request, *args, **kwargs):
+        try:
+            order = Order.objects.get(pk = kwargs["order_id"])
+        except:
+            return Response(  status=status.HTTP_404_NOT_FOUND)
+
+        total_price =  OrderItem.objects.filter(order=order.id).aggregate(Sum('price'))       
+        if order.status  == "PS":
+            order.status = 'PD'
+            if order.taxPrice:
+                order.totalPrice = total_price["price__sum"]+order.taxPrice
+            else:
+                order.totalPrice = total_price["price__sum"]
+            order.save()
+            
+            return self.update(request, *args, **kwargs)
+        return Response(  {"error" :"you dont have permision to payment !"},status=status.HTTP_405_METHOD_NOT_ALLOWED)
