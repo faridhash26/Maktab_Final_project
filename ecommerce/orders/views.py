@@ -125,7 +125,9 @@ class RenderReportSalesPage(LoginRequiredMixin ,View):
     model=Order
 
     def get(self, request, *args, **kwargs):
-        return render(request, 'adminshop/pages/reports_sales.html' )
+        orderlist = Order.objects.filter(order_of_orderitem__product__shop__author=request.user.id ,status="PD").annotate(the_customer=Count("customer") ).values("customer__username" , "the_customer" )
+        print(orderlist)
+        return render(request, 'adminshop/pages/reports_sales.html' ,{"reports":orderlist} )
 
 
 

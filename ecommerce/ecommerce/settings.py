@@ -51,7 +51,6 @@ INSTALLED_APPS = [
 
     # third party moduls
     'drf_yasg',
-    'sass_processor',
     'rest_framework',
     'django_filters',
     # the apps 
@@ -192,5 +191,5 @@ LOGOUT_REDIRECT_URL = 'users:login_suplier'
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=45),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=65),
 }

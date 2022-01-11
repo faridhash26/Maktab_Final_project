@@ -1,7 +1,8 @@
 from django.db import models
-from products.models import Product
 from django.contrib.auth import get_user_model
 
+from products.models import Product
+from shops.models import Shop
 # Create your models here.
 
 User = get_user_model()
@@ -19,6 +20,7 @@ class Order(models.Model):
             (CANCEL, 'Cancel'),
     )
     status =models.CharField(max_length=2,choices=STATUS_CHOICES,default=PROCESSING) 
+    items = models.ManyToManyField(Product , through="OrderItem")
 
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
     createdAt = models.DateTimeField(auto_now_add=True)

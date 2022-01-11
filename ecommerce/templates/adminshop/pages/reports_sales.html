@@ -23,6 +23,29 @@
       </div>
   </div>
   <hr>
+  {% if reports %}
+  <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
+    <tr>
+      <th> Username</th>
+      <th>Count Of Orders </th>
+      <th>Is Accepted</th>
+      <th>Edit</th>
+      <th>Products Of Shop</th>
+      <th>Delete</th>
+    </tr>
+    {% for report in reports%}
+    <tr>
+      <td>{{report.customer__username}}</td>
+      <td>{{report.the_customer}}</td>
+      
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <div class="w3-panel w3-padding-20 w3-center w3-pale-green w3-round-xxlarge w3-border">
+      <h3 class="w3-center">You Have No Shop!</h3>
+    </div>
+  {% endif %}
   
   {% csrf_token %}
 

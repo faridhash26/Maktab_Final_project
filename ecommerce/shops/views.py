@@ -8,8 +8,9 @@ from django.urls import reverse
 from django.contrib import messages
 from rest_framework import generics
 from rest_framework.response import Response
+from drf_yasg.utils import swagger_auto_schema
 
-from .serializers import ShopSerializer,ProductOfShop, ShopType
+from .serializers import ShopSerializer,ProductOfShopSeializer, ShopType,ProductOfShopSWaggerSeializer
 from .filters import ShopFilter,PruductOfShopFilter
 from .forms import CreateShopForm
 from .models import Shop
@@ -112,8 +113,12 @@ class TypeOfShops(generics.ListAPIView):
 
 class ProductOfShop(generics.RetrieveAPIView):
     model=Shop
-    serializer_class = ProductOfShop
+    serializer_class = ProductOfShopSeializer
     lookup_field = 'slug'
     lookup_url_kwarg = 'shop_slug'
     queryset=Shop.objects.all()
+
+    @swagger_auto_schema(responses={"200": ProductOfShopSWaggerSeializer})
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
 

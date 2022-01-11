@@ -51,7 +51,21 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 
-class ProductOfShop(serializers.ModelSerializer):
+class ProductSerializerSwagger(serializers.ModelSerializer):
+    tag = serializers.CharField()
+    class Meta:
+        list_serializer_class = FilteredListSerializer
+
+        model=Product
+        fields=["id" , "name" , "price" , "stock" , "weight" ,"tag"]
+
+class ProductOfShopSWaggerSeializer(serializers.ModelSerializer):
+    products = ProductSerializerSwagger( source="product_shop",many=True )
+    class Meta:
+        model=Shop
+        fields=["id","shop_type" , "name" ,"products"]
+
+class ProductOfShopSeializer(serializers.ModelSerializer):
     products = ProductSerializer( source="product_shop",many=True , read_only=True)
     class Meta:
         model=Shop
