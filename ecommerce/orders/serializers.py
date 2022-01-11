@@ -45,3 +45,4 @@ class PaymentShopSerializer(serializers.ModelSerializer):
         model=Order
         fields = ['customer',"createdAt" ,"updated_at","status","totalPrice" , "taxPrice"]
         read_only_fields=('customer',"createdAt" ,"updated_at","status","totalPrice" , "taxPrice" )
+

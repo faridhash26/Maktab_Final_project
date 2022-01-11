@@ -13,6 +13,8 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Order, OrderItem
 from rest_framework.response import Response
 from rest_framework import status
+from django.db.models.functions import TruncDate
+from django.db.models import Sum,Count
 
 from .serializers import OrderSerializer, PaymentShopSerializer,UpdateOrderItem
 from products.models import Product
@@ -125,18 +127,18 @@ class RenderReportSalesPage(LoginRequiredMixin ,View):
     def get(self, request, *args, **kwargs):
         return render(request, 'adminshop/pages/reports_sales.html' )
 
+
+
 class ReportSales(LoginRequiredMixin ,View):
     def get(self, request, *args, **kwargs):
 
-        labels = ["2020/Q1", "2020/Q2", "2020/Q3", "2020/Q4"]
-        data = [26900, 28700, 27300, 29200]
+        labels = []
+        data = []
+        obj = Order.objects.annotate(day= TruncDate('updated_at')).values('day').annotate(sales = Sum('totalPrice') , days=Count('day') ).values('sales' ,'day')
+        for entry in obj :
+            labels.append(entry["day"])
+            data.append(entry["sales"])
 
-        # queryset = City.objects.values('country__name').annotate(country_population=Sum('population')).order_by('-country_population')
-        # for entry in queryset:
-        #     labels.append(entry['country__name'])
-        #     data.append(entry['country_population'])
-        # https://stackoverflow.com/questions/5926871/get-total-for-each-month-using-django
-        # Sales.objects.filter(date_sold__year='2010').extra({'month' : "MONTH(date_sold)"}).values_list('month').annotate(total_item=Count('item'))
 
         return JsonResponse(data={
             'labels': labels,
@@ -217,3 +219,17 @@ class Paymentview(generics.UpdateAPIView):
             
             return self.update(request, *args, **kwargs)
         return Response(  {"error" :"you dont have permision to payment !"},status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+class ListOfProcessingOrderMethod(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class=PaymentShopSerializer
+    queryset = Order.objects.filter(status="PS")
+    model=Order
+
+
+class ListOfPaid(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class=PaymentShopSerializer
+    queryset = Order.objects.filter(status="PD")
+    model=Order
