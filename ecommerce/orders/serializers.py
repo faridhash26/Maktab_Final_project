@@ -18,7 +18,8 @@ class OrderSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model=Order
         fields=['id','customer','order_of_orderitem']
-
+        read_only_fields=["id"]
+        
     def create(self, validated_data):
         order_items = validated_data.pop('order_of_orderitem')
         order = Order.objects.create(customer=self.context['request'].user)
