@@ -235,12 +235,14 @@ class Paymentview(generics.UpdateAPIView):
 class ListOfProcessingOrderMethod(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class=PaymentShopSerializer
-    queryset = Order.objects.filter(status="PS")
     model=Order
+    def get_queryset(self):
+        return self.model.objects.filter(status="PS" ,customer=self.request.user.id)
 
 
 class ListOfPaid(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class=PaymentShopSerializer
-    queryset = Order.objects.filter(status="PD")
     model=Order
+    def get_queryset(self):
+        return self.model.objects.filter(status="PD" ,customer=self.request.user.id)
