@@ -22,14 +22,14 @@
         <form action="{% url 'orders:the_orders'  %}" method="POST">
           {% csrf_token %}
           <label>From</label>
-        <input type="date" value="{{from_date}}" class="w3-input" name="fromdate" >
+        <input type="date" value="" class="w3-input" name="fromdate" >
 
         <label>To</label>
         <input type="date" value="{{to_date}}" class="w3-input" name="todate">
 
         <div class="w3-select" style="width:200px;">
           <select  class="w3-select"  name="option">
-            <option value=" ">None</option>
+            <option value="">None</option>
             <option value="CF">Confirm</option>
             <option value="PS">Processing</option>
             <option value="PD">Paid</option>

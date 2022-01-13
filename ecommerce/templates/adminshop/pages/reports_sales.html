@@ -1,0 +1,96 @@
+{% extends 'adminshop/base.html' %}
+
+{% block extralink %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+
+{% endblock extralink %}
+
+{% block dashbordcontent %}
+  <!-- Header -->
+  <header class="w3-container" style="padding-top:22px">
+    <h5><b><i class="fa fa-dashboard"></i> Conform Delete Shop </b></h5>
+  </header>
+
+
+  <div class="w3-container w3-margin-top">
+    <div class="w3-card-4 w3-margin-top">
+        <div class="w3-display-container w3-text-white">
+            <canvas id="population-chart" data-url="{% url 'orders:orders_reports' %}"></canvas>
+
+        </div>
+       
+      </div>
+  </div>
+  <hr>
+  {% if reports %}
+  <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
+    <tr>
+      <th> Username</th>
+      <th>Count Of Orders </th>
+      <th>Last Purchase</th>
+      <th>Total Purchase</th>
+      <th>Count of Products</th>
+    </tr>
+    {% for report in reports%}
+    <tr>
+      <td>{{report.customer__username}}</td>
+      <td>{{report.count_order}}</td>
+      <td>{{report.last_purchase}}</td>
+      <td>{{report.total_purchase}}   $</td>
+      <td>{{report.Count_product}}</td>
+      
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <div class="w3-panel w3-padding-20 w3-center w3-pale-green w3-round-xxlarge w3-border">
+      <h3 class="w3-center">You Have No Shop!</h3>
+    </div>
+  {% endif %}
+  
+  {% csrf_token %}
+
+  <script>
+
+    $(function () {
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')
+      var $populationChart = $("#population-chart");
+      $.ajax({
+        url: $populationChart.data("url"),
+        headers: {
+        'X-CSRFToken': csrftoken
+        },
+        success: function (data) {
+            console.log('data label', data)
+          var ctx = $populationChart[0].getContext("2d");
+
+          new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: data.labels,
+              datasets: [{
+                label: 'Sales',
+                backgroundColor: 'blue',
+                data: data.data
+              }]          
+            },
+            options: {
+              responsive: true,
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: 'Sales Report Bar Chart'
+              }
+            }
+          });
+
+        }
+      });
+
+    });
+
+  </script>
+  {% endblock dashbordcontent %}
