@@ -28,15 +28,17 @@
     <tr>
       <th> Username</th>
       <th>Count Of Orders </th>
-      <th>Is Accepted</th>
-      <th>Edit</th>
-      <th>Products Of Shop</th>
-      <th>Delete</th>
+      <th>Last Purchase</th>
+      <th>Total Purchase</th>
+      <th>Count of Products</th>
     </tr>
     {% for report in reports%}
     <tr>
       <td>{{report.customer__username}}</td>
-      <td>{{report.the_customer}}</td>
+      <td>{{report.count_order}}</td>
+      <td>{{report.last_purchase}}</td>
+      <td>{{report.total_purchase}}   $</td>
+      <td>{{report.Count_product}}</td>
       
     </tr>
     {% endfor %}

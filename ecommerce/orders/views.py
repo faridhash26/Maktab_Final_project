@@ -14,7 +14,8 @@ from .models import Order, OrderItem
 from rest_framework.response import Response
 from rest_framework import status
 from django.db.models.functions import TruncDate
-from django.db.models import Sum,Count
+from django.db.models import Sum,Count,Max
+from decimal import *
 
 from .serializers import OrderSerializer, PaymentShopSerializer,UpdateOrderItem
 from products.models import Product
@@ -125,9 +126,18 @@ class RenderReportSalesPage(LoginRequiredMixin ,View):
     model=Order
 
     def get(self, request, *args, **kwargs):
-        orderlist = Order.objects.filter(order_of_orderitem__product__shop__author=request.user.id ,status="PD").annotate(the_customer=Count("customer") ).values("customer__username" , "the_customer" )
-        print(orderlist)
-        return render(request, 'adminshop/pages/reports_sales.html' ,{"reports":orderlist} )
+        listof_orders=[]
+        orderlist = Order.objects.filter(order_of_orderitem__product__shop__author=request.user.id ,status="PD").distinct().annotate(the_customer=Count("customer") ).values("customer__username" ,"customer__id", "the_customer" )
+        for order in orderlist:
+            obj=Order.objects.filter(order_of_orderitem__product__shop__author=request.user.id ,status="PD" , customer = order["customer__id"] ).distinct().aggregate(last_purchase = Max("updated_at") , total_purchase=Sum("totalPrice") , Count_product=Count("order_of_orderitem"))
+            listof_orders.append({
+                "customer__username":order["customer__username"],
+                "count_order":order["the_customer"],
+                "last_purchase":obj["last_purchase"],
+                "total_purchase":obj["total_purchase"],
+                "Count_product":obj["Count_product"]
+            })
+        return render(request, 'adminshop/pages/reports_sales.html' ,{"reports":listof_orders} )
 
 
 
@@ -192,8 +202,7 @@ class DeleteOrderItem(generics.DestroyAPIView):
 
         return Response( {"error":"you can just delete item when status is processing!"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-from django.db.models import Sum
-from decimal import *
+
 
 
 class Paymentview(generics.UpdateAPIView):
