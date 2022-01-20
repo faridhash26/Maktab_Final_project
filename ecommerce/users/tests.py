@@ -12,21 +12,24 @@ from rest_framework import status
 class TestUnit(APITestCase):
     def setUp(self):
         self.customer1 = mommy.make(
-            CustomUser, user_type="CT", username="sharam", password="123")
+            CustomUser, username="sharam",is_register=True , password="123" ,email="sharam@test.com" , phone="09108855")
 
-    @tag('login_api')
+    @tag('login_api_test')
     def test_login_api(self):
-        url = reverse('users:login_suplier')
-        data = {
-            "username": "sharam",
+        customer2 = CustomUser.objects.create(username ="ali" , email="ali@test.com" , phone="1234" , password ='123' , is_register=True  )
+        customer2.set_password('123')
+        customer2.save()
+        url = reverse('login_api')
+        data_login = {
+            "username": "ali",
             "password": "123"
         }
-        response = self.client.get(url, data=data)
+        response = self.client.post(url, data=data_login)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    @tag('register_api')
+    @tag('register_api_test')
     def test_login(self):
-        url = reverse('users:register_api')
+        url = reverse('register_api')
         data=   {
                 "username": "abolfazl123",
                 "password": "123",
@@ -37,4 +40,4 @@ class TestUnit(APITestCase):
 
             }
         response = self.client.post(url, data=data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_503_SERVICE_UNAVAILABLE)
