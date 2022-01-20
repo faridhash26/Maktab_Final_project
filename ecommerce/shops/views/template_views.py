@@ -6,18 +6,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.contrib import messages
-from rest_framework import generics
-from rest_framework.response import Response
-from drf_yasg.utils import swagger_auto_schema
-
-from .serializers import ShopSerializer,ProductOfShopSeializer, ShopType,ProductOfShopSWaggerSeializer
-from .filters import ShopFilter,PruductOfShopFilter
-from .forms import CreateShopForm
-from .models import Shop
+from shops.forms import CreateShopForm
 from django.views.generic.edit import CreateView
 
-# Create your views here.
-
+from shops.models import Shop
 
 class DashboardView(LoginRequiredMixin, ListView):
     """
@@ -91,34 +83,4 @@ class EditShop(LoginRequiredMixin,UpdateView):
     form_class=CreateShopForm
     template_name="adminshop/forms/edit_shop.html"
     success_url ="/shop/dashboard/"
-
-
-
-class ListOfShopsForCustomer(generics.ListAPIView):
-    serializer_class = ShopSerializer
-    filterset_class = ShopFilter
-    model=Shop
-
-    def get_queryset(self):
-        queryset = self.model.objects.filter(is_active=True)
-        return queryset
-
-class TypeOfShops(generics.ListAPIView):
-    serializer_class = ShopType
-    model=Shop
-    def get_queryset(self):
-        queryset = self.model.objects.distinct('shop_type')
-        return queryset
-
-
-class ProductOfShop(generics.RetrieveAPIView):
-    model=Shop
-    serializer_class = ProductOfShopSeializer
-    lookup_field = 'slug'
-    lookup_url_kwarg = 'shop_slug'
-    queryset=Shop.objects.all()
-
-    @swagger_auto_schema(responses={"200": ProductOfShopSWaggerSeializer})
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
 

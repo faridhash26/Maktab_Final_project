@@ -1,25 +1,19 @@
 import datetime
-from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import View
-from django.views.generic.detail import DetailView
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic.list import ListView
 from django.views.generic.edit import DeleteView, UpdateView
-from django.urls import reverse
 from django.urls import reverse_lazy
-from django.contrib import messages
-from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
-from .models import Order, OrderItem
-from rest_framework.response import Response
-from rest_framework import status
+from django.views.generic.detail import DetailView
 from django.db.models.functions import TruncDate
 from django.db.models import Sum,Count,Max
-from decimal import *
+from django.contrib import messages
+from django.urls import reverse
 
-from .serializers import OrderSerializer, PaymentShopSerializer,UpdateOrderItem
-from products.models import Product
-# Create your views here.
+from orders.models import Order,OrderItem
+
+
 
 
 class ListOfOrders(LoginRequiredMixin, View):
@@ -32,8 +26,8 @@ class ListOfOrders(LoginRequiredMixin, View):
         """
         today = str(datetime.date.today())
         parsed_fromdate=today.split("-")
-        from_date=str(datetime.datetime(int(parsed_fromdate[0]) ,int(parsed_fromdate[2]),int(parsed_fromdate[1])).date())
-        to_date=str(datetime.datetime(int(parsed_fromdate[0]) ,int(parsed_fromdate[2]),int(parsed_fromdate[1])).date())   
+        from_date=str(datetime.datetime(int(parsed_fromdate[0]) ,int(parsed_fromdate[1]),int(parsed_fromdate[2])).date())
+        to_date=str(datetime.datetime(int(parsed_fromdate[0]) ,int(parsed_fromdate[1]),int(parsed_fromdate[2])).date())   
 
         orderlist = Order.objects.filter(order_of_orderitem__product__shop__author=request.user.id).values(
             'id','createdAt', 'order_of_orderitem__product__shop__name', 'status', 'customer__username').order_by('-createdAt').distinct()
@@ -157,92 +151,3 @@ class ReportSales(LoginRequiredMixin ,View):
             'data': data,
         })
 
-
-
-
-
-# ===============
-# api
-# ===============
-class CreateOrderByCustomer(generics.CreateAPIView):
-    model = Order
-    permission_classes = (IsAuthenticated,)
-    serializer_class=OrderSerializer
-
-
-
-class UpdateTheOrderItem(generics.CreateAPIView):
-    permission_classes = (IsAuthenticated,)
-    serializer_class=UpdateOrderItem
-    model = OrderItem
-
-class DeleteOrderItem(generics.DestroyAPIView):
-    permission_classes = (IsAuthenticated,)
-    model = OrderItem
-
-    def destroy(self, request, *args, **kwargs):
-
-        order_of_item=  get_object_or_404(OrderItem , id =kwargs["orderitem_id"])
-        if order_of_item.order.status == 'PS':
-            the_product = get_object_or_404(Product ,id= order_of_item.product.id)
-            the_product.stock = the_product.stock +order_of_item.qty
-            the_product.save()
-            order_of_item.delete()
-
-            try:
-                order_items_count= OrderItem.objects.filter(order=kwargs["order_id"]).count()
-            except:
-                return Response(status=status.HTTP_404_NOT_FOUND)
-                
-            if order_items_count==0:
-                Order.objects.get(id =kwargs["order_id"]).delete()
-                return Response(status=status.HTTP_204_NO_CONTENT)
-
-            return Response(status=status.HTTP_204_NO_CONTENT)
-
-        return Response( {"error":"you can just delete item when status is processing!"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-
-
-
-class Paymentview(generics.UpdateAPIView):
-    permission_classes = (IsAuthenticated,)
-    model=Order
-    queryset=Order.objects.all()
-    lookup_field="id"
-    lookup_url_kwarg="order_id"
-    serializer_class=PaymentShopSerializer
-
-    def put(self, request, *args, **kwargs):
-        try:
-            order = Order.objects.get(pk = kwargs["order_id"])
-        except:
-            return Response(  status=status.HTTP_404_NOT_FOUND)
-
-        total_price =  OrderItem.objects.filter(order=order.id).aggregate(Sum('price'))       
-        if order.status  == "PS":
-            order.status = 'PD'
-            if order.taxPrice:
-                order.totalPrice = total_price["price__sum"]+order.taxPrice
-            else:
-                order.totalPrice = total_price["price__sum"]
-            order.save()
-            
-            return self.update(request, *args, **kwargs)
-        return Response(  {"error" :"you dont have permision to payment !"},status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-
-class ListOfProcessingOrderMethod(generics.ListAPIView):
-    permission_classes = (IsAuthenticated,)
-    serializer_class=PaymentShopSerializer
-    model=Order
-    def get_queryset(self):
-        return self.model.objects.filter(status="PS" ,customer=self.request.user.id)
-
-
-class ListOfPaid(generics.ListAPIView):
-    permission_classes = (IsAuthenticated,)
-    serializer_class=PaymentShopSerializer
-    model=Order
-    def get_queryset(self):
-        return self.model.objects.filter(status="PD" ,customer=self.request.user.id)
