@@ -21,7 +21,6 @@ class FilteredListSerializer(serializers.ListSerializer):
                 if self.context['request'].query_params['is_stock'] =="True":
                     data = data.filter(stock__gt=0)
             if "tag" in self.context['request'].query_params:       
-                print('tag')
                 data = data.filter(tag__title=self.context['request'].query_params['tag'])
         except:
             return super(FilteredListSerializer, self).to_representation(data)

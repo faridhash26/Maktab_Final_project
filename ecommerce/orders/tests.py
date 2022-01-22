@@ -75,11 +75,11 @@ class TestUnit(APITestCase):
         response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        # @tag('ordering')
-        # def test_create_order(self):
-        #     print(self.product1.id)
-        #     new_order = {"order_of_orderitem": [{"product": self.product1.id,"qty": 1}]}
-        #     url = reverse('orders:new_order_api')
-        #     response = self.client.post(url, data=new_order)
-        #     print(response.data)
-        #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    # @tag('ordering')
+    # def test_create_order(self):
+    #     print(self.product1.id)
+    #     new_order = {"order_of_orderitem": [{"product": self.product1.id,"qty": 1}]}
+    #     url = reverse('new_order_api')
+    #     response = self.client.post(url, data=new_order)
+    #     print(response.data)
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)

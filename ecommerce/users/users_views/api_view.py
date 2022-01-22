@@ -90,13 +90,12 @@ class LoginCustomer(APIView):
     def post(self, request):
         if 'username' not in request.data or 'password' not in request.data:
              return Response({'msg': 'Credentials missing'}, status=status.HTTP_400_BAD_REQUEST)
-        print('password' , request.data.get('password'))
-        user = authenticate(username=request.data.get('username'), password=request.data.get('password'))
+        user = authenticate(username=request.data.get(
+                    'username'), password=request.data.get('password'))
+        print(user)
         if user is not None and user.user_type=="CT" and user.is_register==True:
             refresh = RefreshToken.for_user(user)
-            print('faz 2')
             return Response({'msg': 'Login Success','access':str(refresh.access_token)}, status=status.HTTP_200_OK)
-        print('faz3')
         return Response({'msg': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
