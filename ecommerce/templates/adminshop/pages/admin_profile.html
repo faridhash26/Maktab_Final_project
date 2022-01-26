@@ -1,5 +1,9 @@
 {% extends 'adminshop/base.html' %}
 {% load static %}
+{% block extralink %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+{% endblock extralink %}
 
 {% block dashbordcontent %}
   <!-- Header -->
@@ -28,6 +32,37 @@
           <h4>City : {{user.city}}</h4>
           <h4>zip Code : {{user.zip}}</h4>
           <h4>Address : {{user.address}}</h4>
+          <h4 >Phone : <span id="phone">{{user.phone}}</span></h4>
+          {% if user.is_register is False %}
+          <button id="sendotp" onclick="document.getElementById('id01').style.display='block'"
+          class="w3-btn w3-black">Open Modal</button>
+          <div id="id01" class="w3-modal">
+            <div class="w3-modal-content w3-animate-top w3-card-4">
+              <header class="w3-container w3-teal"> 
+                <span onclick="document.getElementById('id01').style.display='none'" 
+                class="w3-button w3-display-topright">&times;</span>
+                <h2>Modal Header</h2>
+              </header>
+              <div class="w3-container">
+                <form id="formId"  class="w3-container" >
+                  <div class="w3-section">
+                    <label><b>Username</b></label>
+                    <input class="w3-input w3-border w3-margin-bottom" type="text" placeholder="Enter Username" name="phone" required>
+                    <label><b>otp</b></label>
+                    <input class="w3-input w3-border" type="text" placeholder="Enter Otp" name="otp" required>
+                    <button id="submitButton" class="w3-button w3-block w3-green w3-section w3-padding" type="submit">Login</button>
+                  </div>
+                </form>
+              </div>
+              <footer class="w3-container w3-teal">
+                <p>Modal Footer</p>
+              </footer>
+            </div>
+          </div>
+          {% else %}
+            <p><span class="w3-tag w3-teal">Phone Activated</span></p>
+          {%  endif %}
+
         </div>
       </div>
     
@@ -36,6 +71,40 @@
   </div>
   <hr>
   
+  {% csrf_token %}
 
+<script>
+  $(function(){
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')
+
+    $("#sendotp").click(function(){
+      var phone =$("#phone").text()
+      console.log(phone)
+      $.post("/user/v1/api/generate_otp/",{
+        phone: phone
+      }, function(data, status){
+        
+      });
+    });
+
+   
+    $("form").on("submit", function(event){
+
+        event.preventDefault();
+      $.ajax({
+        url: "/user/v1/api/activate/phone/",
+        method:"POST",
+        headers: {
+        'X-CSRFToken': csrftoken
+        },
+        data:$(this).serialize(),
+        success: function (data) {
+          console.log('data label', data)
+        }
+      
+      })
+    });
+  });
+</script>
 
   {% endblock dashbordcontent %}

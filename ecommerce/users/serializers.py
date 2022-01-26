@@ -37,3 +37,12 @@ class UpdateProfileSerilizer(serializers.ModelSerializer):
     class Meta:
         models=CustomUser
         fields= ['id', 'username' ,"phone" , "address" ,"city" ,"zip","image" ]
+
+
+class GenerateOtpLoginSerializer(serializers.Serializer):
+    phone= serializers.CharField()
+
+
+class LoginUserWithOtpSerializer(serializers.Serializer):
+    phone= serializers.CharField()
+    otp = serializers.CharField()

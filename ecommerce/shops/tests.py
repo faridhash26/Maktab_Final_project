@@ -26,14 +26,14 @@ class TestUnit(APITestCase):
 
     @tag('shop_types')
     def test_shop_types(self):
-        url = reverse('shops:type_of_shops')
+        url = reverse('type_of_shops')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
 
     @tag('product_of_shop')
     def test_product_of_shop(self):
-        url = reverse('shops:product_of_shop', kwargs={
+        url = reverse('product_of_shop', kwargs={
                       'shop_slug': self.shop1.slug})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -41,7 +41,7 @@ class TestUnit(APITestCase):
 
     @tag('shop_list')
     def test_shops(self):
-        url = reverse('shops:list_of_shops')
+        url = reverse('list_of_shops')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
