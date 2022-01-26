@@ -97,7 +97,6 @@ class LoginCustomer(APIView):
             return Response({'msg': 'Credentials missing'}, status=status.HTTP_400_BAD_REQUEST)
         user = authenticate(username=request.data.get(
             'username'), password=request.data.get('password'))
-        print(user)
         if user is not None and user.user_type == "CT" and user.is_register == True:
             refresh = RefreshToken.for_user(user)
             return Response({'msg': 'Login Success', 'access': str(refresh.access_token)}, status=status.HTTP_200_OK)
@@ -115,21 +114,18 @@ class ProfileCustomerApi(generics.RetrieveUpdateAPIView):
 class ActivateUserPhone(APIView):
 
     def post(self, request):
-        print(request.data)
         if 'phone' not in request.data or 'otp' not in request.data:
             return Response({'msg': 'Credentials missing'}, status=status.HTTP_400_BAD_REQUEST)
             print('faz1')
         user = get_object_or_404(CustomUser, phone=request.data["phone"])
         try:
             if sample.totp.verify(request.data["otp"]):
-                print('faz2')
 
                 user_obj = get_object_or_404(CustomUser, phone=user.phone)
                 if user_obj.is_register:
-                    return Response({'msg': 'user already registered'}, status=status.HTTP_200_OK)
+                    return Response({'msg': 'user already registered'}, status=status.HTTP_403_FORBIDDEN)
                 user_obj.is_register = True
                 user_obj.save()
-                print('faz3')
                 return Response({'msg': 'user successfuly registered'}, status=status.HTTP_202_ACCEPTED)
         except:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)

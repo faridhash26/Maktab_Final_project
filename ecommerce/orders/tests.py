@@ -55,6 +55,14 @@ class TestUnit(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
 
+
+    @tag('empty_all_order_paid')
+    def test_empty_paid_order(self):
+        url = reverse('paid_list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 0) 
+        
     @tag('all_order_paid')
     def test_paid_order(self):
         url_pay = reverse('paying_order', kwargs={
@@ -74,6 +82,9 @@ class TestUnit(APITestCase):
         data = {"product": self.product2.id, "qty": 1}
         response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        print(response.data)
+        self.assertEqual(response.data["product"], self.product2.id)
+        self.assertEqual(response.data["qty"], 1)
 
     # @tag('ordering')
     # def test_create_order(self):
